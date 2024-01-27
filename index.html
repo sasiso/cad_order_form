@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Express CAD Service</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            resize: vertical; /* Allow vertical resizing */
+            max-width: 100%; /* Ensure the textarea takes up all available width */
+        }
+
+        #imageUploadContainer {
+            margin-bottom: 10px;
+        }
+
+        #imageUploadContainer input {
+            margin-top: 5px;
+        }
+
+        .uploaded-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        .delete-image-btn {
+            color: #fff;
+            background-color: #dc3545;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .reset-btn {
+            padding: 10px;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .previous-jobs {
+            margin-top: 20px;
+        }
+
+        #jobList {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #jobList li {
+            margin-bottom: 5px;
+            cursor: pointer;
+            color: #007BFF;
+        }
+    </style>
+    <script src="js/script.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Express CAD Service</h1>
+
+        <div class="form-group">
+            <label for="clientName">Client Name:</label>
+            <input type="text" id="clientName">
+        </div>
+
+        <div class="form-group">
+            <label for="clientReference">Client Reference:</label>
+            <input type="text" id="clientReference">
+        </div>
+
+        <div class="form-group">
+            <label for="ringSize">Ring Size:</label>
+            <input type="text" id="ringSize">
+        </div>
+
+        <div class="form-group">
+            <label for="stoneSize">Stone Size:</label>
+            <input type="text" id="stoneSize">
+        </div>
+
+        <div class="form-group">
+            <label for="shankSize">Shank Size:</label>
+            <input type="text" id="shankSize">
+        </div>
+
+        <div class="form-group">
+            <label for="clientInputs">Client Inputs:</label>
+            <textarea placeholder="Enter Client Inputs"></textarea>
+            <textarea placeholder="Enter Value (up to 300 characters)" maxlength="300"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="imageUpload">Upload Images:</label>
+            <div id="imageUploadContainer">
+                <input type="file" id="imageUpload" accept="image/*" multiple onchange="handleImageUpload(event)">
+            </div>
+        </div>
+
+        <div id="imageControls"></div>
+
+        <div class="button-group">
+            <button onclick="saveData()">Save Data</button>
+            <button onclick="generatePDF()">Save as PDF</button>
+			<button onclick="loadData()">Load Data</button>
+            <button class="reset-btn" onclick="resetForm()">Reset Form</button>
+        </div>
+
+        <div class="previous-jobs">
+            <h2>Previous Jobs</h2>
+            <ul id="jobList"></ul>
+        </div>
+    </div>
+</body>
+</html>
