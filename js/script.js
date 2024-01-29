@@ -408,5 +408,21 @@ function handleContentChange() {
     // After handling content changes, update the body height
     setBodyHeight();
 }
+// Flag to track whether form data has been modified
+let formDataModified = false;
+
+// Add an event listener to detect changes in form data
+document.addEventListener('input', function () {
+    formDataModified = true;
+});
+
+// Add an event listener to warn the user before refreshing the page
+window.addEventListener('beforeunload', function (event) {
+    if (formDataModified) {
+        const message = 'You have unsaved changes. Are you sure you want to leave?';
+        event.returnValue = message; // Standard for most browsers
+        return message; // For some older browsers
+    }
+});
 
 window.addEventListener('load', setBodyHeight);
