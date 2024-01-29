@@ -14,7 +14,7 @@
         }
 
         .container {
-            max-width: 600px;
+            max-width: 80%;
             margin: 20px auto;
             background-color: #fff;
             padding: 20px;
@@ -38,41 +38,35 @@
             max-width: 100%; /* Ensure the textarea takes up all available width */
         }
 
-        #imageUploadContainer {
-            margin-bottom: 10px;
+        .input-value-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        #imageUploadContainer input {
-            margin-top: 5px;
+        .input-value-pair {
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
 
-        .uploaded-image {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 5px;
+        .input-text, .value-text {
+            flex: 1;
         }
 
-        .delete-image-btn {
-            color: #fff;
+        .remove-btn {
             background-color: #dc3545;
+            color: #fff;
             border: none;
             padding: 5px 10px;
             cursor: pointer;
         }
 
-        button {
-            padding: 10px;
+        .add-btn {
             background-color: #007BFF;
             color: #fff;
             border: none;
-            cursor: pointer;
-        }
-
-        .reset-btn {
             padding: 10px;
-            background-color: #dc3545;
-            color: #fff;
-            border: none;
             cursor: pointer;
         }
 
@@ -123,10 +117,17 @@
             <input type="text" id="shankSize">
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="clientInputsContainer">
             <label for="clientInputs">Client Inputs:</label>
-            <textarea placeholder="Enter Client Inputs"></textarea>
-            <textarea placeholder="Enter Value (up to 300 characters)" maxlength="300"></textarea>
+            <div id="inputValuePairs" class="input-value-container">
+                <!-- Key-Value Pair Template -->
+                <div class="input-value-pair">
+                    <textarea class="input-text" placeholder="Enter Client Inputs"></textarea>
+                    <textarea class="value-text" placeholder="Enter Value (up to 300 characters)" maxlength="300"></textarea>
+                    <button class="remove-btn" onclick="removeInputValuePair(this)">Remove</button>
+                </div>
+            </div>
+            <button class="add-btn" onclick="addInputValuePair()">Add Input-Value Pair</button>
         </div>
 
         <div class="form-group">
@@ -141,13 +142,8 @@
         <div class="button-group">
             <button onclick="saveData()">Save Data</button>
             <button onclick="generatePDF()">Save as PDF</button>
-			<button onclick="loadData()">Load Data</button>
+            <button onclick="loadData()">Load Data</button>
             <button class="reset-btn" onclick="resetForm()">Reset Form</button>
-        </div>
-
-        <div class="previous-jobs">
-            <h2>Previous Jobs</h2>
-            <ul id="jobList"></ul>
         </div>
     </div>
 </body>

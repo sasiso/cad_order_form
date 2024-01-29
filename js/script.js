@@ -1,33 +1,3 @@
-// Function to handle image upload
-function handleImageUpload(event) {
-    const container = document.getElementById('imageUploadContainer');
-    const imageControls = document.getElementById('imageControls');
-    const files = event.target.files;
-
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const imageURL = URL.createObjectURL(file);
-
-        // Create a new image element
-        const imageElement = document.createElement('img');
-        imageElement.src = imageURL;
-        imageElement.className = 'uploaded-image';
-        container.appendChild(imageElement);
-
-        // Create a new input for text
-        const textInput = document.createElement('input');
-        textInput.type = 'text';
-        textInput.placeholder = 'Enter text for this image';
-        textInput.className = 'image-text-input';
-        imageControls.appendChild(textInput);
-
-        // Add an event listener to update image text when input changes
-        textInput.addEventListener('input', function () {
-            updateImageText(i, this.value);
-        });
-    }
-}
-
 // Function to update the text associated with an image
 function updateImageText(index, text) {
     // Update or store the text associated with the image at the specified index
@@ -58,43 +28,7 @@ function addCustomField() {
     customFieldsContainer.appendChild(customFieldDiv);
 }
 
-// Function to handle image upload
-function handleImageUpload(event) {
-    const container = document.getElementById('imageUploadContainer');
-    const imageControls = document.getElementById('imageControls');
-    const files = event.target.files;
 
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-
-        // Read the file as a Data URL (Base64-encoded)
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const imageURL = e.target.result;
-
-            // Create a new image element
-            const imageElement = document.createElement('img');
-            imageElement.src = imageURL;
-            imageElement.className = 'uploaded-image';
-            container.appendChild(imageElement);
-
-            // Create a new input for text
-            const textInput = document.createElement('input');
-            textInput.type = 'text';
-            textInput.placeholder = 'Enter text for this image';
-            textInput.className = 'image-text-input';
-            imageControls.appendChild(textInput);
-
-            // Add an event listener to update image text when input changes
-            textInput.addEventListener('input', function () {
-                updateImageText(i, this.value);
-            });
-        };
-
-        // Read the image file as a Data URL
-        reader.readAsDataURL(file);
-    }
-}
 
 
 // Placeholder function to simulate fetching previous jobs from the database
@@ -146,24 +80,6 @@ function saveToDatabase(data) {
     saveJob(data);
 }
 
-// Function to load data from the local database
-function loadFromDatabase() {
-    // Implement logic to load data from the local database
-    // For example, you can use IndexedDB or another storage mechanism
-
-    // For demonstration purposes, let's assume there's a function getPreviousJobs() that returns an array of jobs
-    const previousJobs = getPreviousJobs();
-
-    // Display previous jobs in a list
-    const jobList = document.getElementById('jobList');
-    jobList.innerHTML = '';
-    previousJobs.forEach((job) => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `${job.clientName} - ${job.dateTime}`;
-        listItem.addEventListener('click', () => loadJob(job));
-        jobList.appendChild(listItem);
-    });
-}
 
 // Function to load a specific job
 function loadJob(job) {
@@ -211,29 +127,6 @@ function setCustomFields(customFields) {
     });
 }
 
-// Function to display images
-function displayImages(images) {
-    const container = document.getElementById('imageUploadContainer');
-    container.innerHTML = '';
-
-    images.forEach((imageURL, index) => {
-        // Create a new image element
-        const imageElement = document.createElement('img');
-        imageElement.src = imageURL;
-        imageElement.className = 'uploaded-image';
-        container.appendChild(imageElement);
-
-        // Create a new input for text
-        const textInput = document.createElement('input');
-        textInput.type = 'text';
-        textInput.placeholder = 'Enter text for this image';
-        textInput.className = 'image-text-input';
-        textInput.addEventListener('input', function () {
-            updateImageText(index, this.value);
-        });
-        container.appendChild(textInput);
-    });
-}
 
 async function generatePDF() {
     // Use browser's print function
@@ -263,7 +156,27 @@ function resetForm() {
     }
 }
 
-// Function to save data to local storage
+// Function to get dynamic input-value pairs
+function getDynamicInputValuePairs() {
+    const inputValuePairDivs = document.querySelectorAll('.input-value-pair');
+    const inputValues = [];
+
+    inputValuePairDivs.forEach((inputValuePairDiv) => {
+        const inputTextArea = inputValuePairDiv.querySelector('.input-text');
+        const valueTextArea = inputValuePairDiv.querySelector('.value-text');
+
+        // Add the input-value pair to the array
+        inputValues.push({
+            text: inputTextArea.value,
+            value: valueTextArea.value,
+        });
+    });
+
+    return inputValues;
+}
+
+
+// Function to save data to a JSON file with a custom file name
 function saveData() {
     const data = {
         clientName: document.getElementById('clientName').value,
@@ -271,67 +184,49 @@ function saveData() {
         ringSize: document.getElementById('ringSize').value,
         stoneSize: document.getElementById('stoneSize').value,
         shankSize: document.getElementById('shankSize').value,
-        clientInputs: document.getElementById('clientInputs').value,
+        clientInputs: getDynamicInputValuePairs(),
         images: getUploadedImages(),
     };
 
     // Filter out properties with empty values
     const filteredData = Object.fromEntries(Object.entries(data).filter(([_, v]) => v !== '' && v !== null && v !== undefined));
 
-    // Save data to local storage
-    localStorage.setItem('savedData', JSON.stringify(filteredData));
-    alert('Data saved successfully!');
-}
+    // Convert the data to a JSON string
+    const jsonData = JSON.stringify(filteredData);
 
+    // Prompt the user for the file name
+    const fileName = prompt('Enter the file name (include .json extension):', 'saved_data.json');
 
-// Function to load data from local storage
-function loadData() {
-    const savedData = localStorage.getItem('savedData');
+    if (fileName) {
+        // Create a Blob with the JSON data
+        const blob = new Blob([jsonData], { type: 'application/json' });
 
-    if (savedData) {
-        const data = JSON.parse(savedData);
-
-        // Set form fields
-        document.getElementById('clientName').value = data.clientName || '';
-        document.getElementById('clientReference').value = data.clientReference || '';
-        document.getElementById('ringSize').value = data.ringSize || '';
-        document.getElementById('stoneSize').value = data.stoneSize || '';
-        document.getElementById('shankSize').value = data.shankSize || '';
-        document.getElementById('clientInputs').value = data.clientInputs || '';
-
-        // Display uploaded images
-        displayImages(data.images);
-    } else {
-        alert('No saved data found.');
+        // Create an anchor element to trigger the download
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
     }
 }
+
+// Function to load data from a JSON file
+function loadData() {
+    // Create an input element for file selection
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.addEventListener('change', handleFileSelect);
+    input.click();
+}
+
+
 
 // Function to clear saved data
 function clearSavedData() {
     localStorage.removeItem('savedData');
     alert('Saved data cleared successfully!');
-}
-
-// Function to display images
-function displayImages(images) {
-    const container = document.getElementById('imageUploadContainer');
-    container.innerHTML = '';
-
-    images.forEach((imageURL, index) => {
-        const imageElement = document.createElement('img');
-        imageElement.src = imageURL;
-        imageElement.className = 'uploaded-image';
-        container.appendChild(imageElement);
-
-        // Create a delete button for each image
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Delete';
-        deleteButton.className = 'delete-image-btn';
-        deleteButton.onclick = function () {
-            deleteImage(index);
-        };
-        container.appendChild(deleteButton);
-    });
 }
 
 // Function to delete an uploaded image
@@ -375,5 +270,143 @@ function getCurrentDateTimeString() {
 
     return `${year}${month}${day}_${hours}${minutes}${seconds}`;
 }
-// Call loadFromDatabase to display previous jobs when the page loads
-window.onload = loadFromDatabase;
+
+// Function to delete an uploaded image and its text
+function deleteImage(container) {
+    const imageContainer = document.getElementById('imageUploadContainer');
+    imageContainer.removeChild(container);
+}
+
+
+function removeInputValuePair(button) {
+    // Get the parent div (input-value pair) and remove it
+    const inputValuePairDiv = button.parentElement;
+    inputValuePairDiv.remove();
+}
+
+function addInputValuePair() {
+    const inputValuePairContainer = document.getElementById('inputValuePairs');
+
+    // Create a new div for the input and value pair
+    const inputValuePairDiv = document.createElement('div');
+    inputValuePairDiv.className = 'input-value-pair';
+
+    // Create textarea for input
+    const inputTextArea = document.createElement('textarea');
+    inputTextArea.className = 'input-key';
+    inputTextArea.placeholder = 'Enter Key';
+    inputValuePairDiv.appendChild(inputTextArea);
+
+    // Create textarea for value
+    const valueTextArea = document.createElement('textarea');
+    valueTextArea.className = 'input-value';
+    valueTextArea.placeholder = 'Enter Value (up to 300 characters)';
+    valueTextArea.maxLength = 300;
+    inputValuePairDiv.appendChild(valueTextArea);
+
+    // Create a button to remove the input-value pair
+    const removeButton = document.createElement('button');
+    removeButton.textContent = 'Remove';
+    removeButton.className = 'remove-btn'; // Add the remove-btn class
+    removeButton.onclick = function () {
+        removeInputValuePair(this);
+    };
+    inputValuePairDiv.appendChild(removeButton);
+
+    // Get the computed style of the first input-value pair
+    const computedStyle = window.getComputedStyle(inputValuePairContainer.firstElementChild);
+
+    // Apply the computed style to the dynamically added input-value pair
+    inputValuePairDiv.style.width = computedStyle.width;
+    inputValuePairDiv.style.marginBottom = computedStyle.marginBottom;
+
+    // Append the new input-value pair to the container
+    inputValuePairContainer.appendChild(inputValuePairDiv);
+}
+
+
+// Function to handle image upload
+function handleImageUpload(event) {
+    const container = document.getElementById('imageUploadContainer');
+    const files = event.target.files;
+
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const imageURL = URL.createObjectURL(file);
+
+        // Create a new container for the image and its text
+        const imageContainer = document.createElement('div');
+        imageContainer.className = 'image-container';
+
+        // Create a new image element
+        const imageElement = document.createElement('img');
+        imageElement.src = imageURL;
+        imageElement.className = 'uploaded-image';
+        imageContainer.appendChild(imageElement);
+
+        // Create a new input for text
+        const textInput = document.createElement('input');
+        textInput.type = 'text';
+        textInput.placeholder = 'Enter text for this image';
+        textInput.className = 'image-text-input';
+        imageContainer.appendChild(textInput);
+
+        // Create a new delete button
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.className = 'delete-image-btn';
+        deleteButton.onclick = function () {
+            deleteImage(imageContainer);
+        };
+        imageContainer.appendChild(deleteButton);
+
+        // Append the new container to the main container
+        container.appendChild(imageContainer);
+
+        // Add an event listener to calculate totalImageHeight once the image is loaded
+        imageElement.onload = function () {
+            calculateTotalImageHeight();
+        };
+    }
+}
+
+// Function to calculate and update totalImageHeight
+function calculateTotalImageHeight() {
+    const imageElements = document.querySelectorAll('.uploaded-image');
+    let totalImageHeight = 0;
+
+    imageElements.forEach((imageElement) => {
+        totalImageHeight += imageElement.naturalHeight;
+    });
+
+    console.log("Value of totalImageHeight:----------------->", totalImageHeight);
+
+    // Set the body height to the calculated totalImageHeight
+    document.body.style.height = totalImageHeight + 'px';
+}
+
+
+
+
+function setBodyHeight() {
+
+    const imageContainer = document.getElementById('imageUploadContainer');
+    const images = imageContainer.querySelectorAll('.uploaded-image');
+
+    
+    const totalImageHeight = calculateTotalImageHeight()
+    console.log("Value of totalImageHeight:", totalImageHeight);
+    console.log("Value of document.documentElement.scrollHeight", document.documentElement.scrollHeight);
+    const contentHeight = document.documentElement.scrollHeight + totalImageHeight;
+    
+    //document.body.style.height = `${contentHeight}px`;
+}
+// Call the function after images are uploaded or when content changes
+function handleContentChange() {
+    // ... (your existing code for handling content changes)
+
+    // After handling content changes, update the body height
+    setBodyHeight();
+}
+
+window.addEventListener('load', setBodyHeight);
