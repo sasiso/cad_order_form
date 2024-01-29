@@ -340,7 +340,6 @@ function handleImageUpload(event) {
 
         // Create a new image element
         const imageElement = document.createElement('img');
-        imageElement.src = imageURL;
         imageElement.className = 'uploaded-image';
         imageContainer.appendChild(imageElement);
 
@@ -367,7 +366,26 @@ function handleImageUpload(event) {
         imageElement.onload = function () {
             calculateTotalImageHeight();
         };
+
+        // Resize the image and set the src attribute
+        resizeImage(imageElement, imageURL, 400);
     }
+}
+
+// Function to resize the image while maintaining aspect ratio
+function resizeImage(imageElement, imageURL, maxWidth) {
+    const img = new Image();
+    img.src = imageURL;
+
+    img.onload = function () {
+        const aspectRatio = img.width / img.height;
+        const newWidth = Math.min(maxWidth, img.width);
+        const newHeight = newWidth / aspectRatio;
+
+        imageElement.src = imageURL;
+        imageElement.style.width = `${newWidth}px`;
+        imageElement.style.height = `${newHeight}px`;
+    };
 }
 
 // Function to calculate and update totalImageHeight
