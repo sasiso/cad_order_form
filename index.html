@@ -568,7 +568,7 @@
             // Create textarea for input
             const inputTextArea = document.createElement('textarea');
             inputTextArea.className = 'input-key';
-            inputTextArea.placeholder = 'Enter Key';
+            inputTextArea.placeholder = 'Enter specification';
             inputValuePairDiv.appendChild(inputTextArea);
 
             // Create textarea for value
@@ -730,6 +730,11 @@
         </div>
 
         <div class="form-group">
+            <label for="clientName">Job Number:</label>
+            <input type="text" id="JobNumber">
+        </div>
+
+        <div class="form-group">
             <label for="clientReference">Client Reference:</label>
             <input type="text" id="clientReference">
         </div>
@@ -748,9 +753,10 @@
             <label for="shankSize">Shank Size:</label>
             <input type="text" id="shankSize">
         </div>
-
+        <label for="clientInputs">specifications:</label>
         <div class="form-group" id="clientInputsContainer">
-            <label for="clientInputs">Client Inputs:</label>
+            
+            
             <div id="inputValuePairs" class="input-value-container">
                 <!-- Key-Value Pair Template -->
                 <div class="input-value-pair">
@@ -763,14 +769,14 @@
 
         </div>
         <div class="button-group">
-            <button class="add-btn" onclick="addInputValuePair()">Add Input-Value Pair</button>
+            <button class="add-btn" onclick="addInputValuePair()">Add more specifications</button>
             <!--<button onclick="saveData()">Save Data</button> -->
             <button onclick="generatePDF()">Save as PDF</button>
             <!--<button onclick="loadData()">Load Data</button>-->
             <button class="reset-btn" onclick="resetForm()">Reset Form</button>
         </div>
         <div class="form-group">
-            <label for="imageUpload">Upload Images:</label>
+            <label for="imageUpload">Upload Pictures:</label>
             <div id="imageUploadContainer">
                 <input type="file" id="imageUpload" accept="image/*" multiple onchange="handleImageUpload(event)">
             </div>
